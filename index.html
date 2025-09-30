@@ -247,38 +247,34 @@
 	}
 	
 	function enviarAGoogleSheets() {
-	  const fecha = document.getElementById("fecha").value;
-	  const profesor = document.getElementById("profesor").value;
-	  const grupo = document.getElementById("grupo").value;
-	  const alumnos = document.querySelectorAll("#lista-asistencia .alumno");
-	  const presentes = [];
+  const fecha = document.getElementById("fecha").value;
+  const profesor = document.getElementById("profesor").value;
+  const grupo = document.getElementById("grupo").value;
+  const alumnos = document.querySelectorAll("#lista-asistencia .alumno");
+  const presentes = [];
 
-	  alumnos.forEach(alumno => {
-		const nombre = alumno.querySelector("label").textContent;
-		const check = alumno.querySelector("input").checked;
-		if (check) presentes.push(nombre);
-	  });
+  alumnos.forEach(alumno => {
+    const nombre = alumno.querySelector("label").textContent;
+    const check = alumno.querySelector("input").checked;
+    if (check) presentes.push(nombre);
+  });
 
-	  const datos = {
-		fecha,
-		profesor,
-		grupo,
-		presentes
-	  };
+  const formData = new FormData();
+  formData.append("fecha", fecha);
+  formData.append("profesor", profesor);
+  formData.append("grupo", grupo);
+  formData.append("presentes", JSON.stringify(presentes));
 
-	  fetch("https://script.google.com/macros/s/AKfycbydGNE5eCvVHgd5fyPEfwDqltmNVAyYq1jtoO0yXEhgXHUr7UljAY6OQYovI-rU9Am8/exec", {
-		method: "POST",
-		body: JSON.stringify(datos),
-		headers: {
-		  "Content-Type": "application/json"
-		}
-	  })
-	  .then(res => res.text())
-	  .then(respuesta => {
-		alert("✅ Asistencia guardada en Google Sheets");
-	  })
-	  .catch(error => {
-		alert("❌ Error al enviar: " + error);
-	  });
-	}
+  fetch("https://script.google.com/macros/s/AKfycbydGNE5eCvVHgd5fyPEfwDqltmNVAyYq1jtoO0yXEhgXHUr7UljAY6OQYovI-rU9Am8/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(respuesta => {
+    alert("✅ Asistencia guardada en Google Sheets");
+  })
+  .catch(error => {
+    alert("❌ Error al enviar: " + error.message);
+  });
+}
 </script>
