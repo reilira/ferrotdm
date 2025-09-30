@@ -268,7 +268,7 @@ async function enviarAGoogleSheets() {
 
 	  // Lo enviamos como x-www-form-urlencoded para evitar preflight
   const formData = new URLSearchParams();
-  formData.append("payload", JSON.stringify(data));
+  formData.append("payload", JSON.stringify(datos));
 
   try {
     const response = await fetch(
@@ -294,6 +294,7 @@ async function enviarAGoogleSheets() {
   }
 }	  
 </script>
+
 
 
 
