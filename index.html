@@ -182,45 +182,34 @@
       doc.save(nombreArchivo);
     }
 
+   
     async function enviarAGoogleSheets() {
       const fecha = document.getElementById("fecha").value;
       const profesor = document.getElementById("profesor").value;
       const grupo = document.getElementById("grupo").value;
       const alumnos = document.querySelectorAll("#lista-asistencia .alumno");
-      const presentes = [];
+      const presentes=[];
+      alumnos.forEach(a=>{ if(a.querySelector("input").checked) presentes.push(a.querySelector("label").textContent); });
 
-      alumnos.forEach(alumno => {
-        const nombre = alumno.querySelector("label").textContent;
-        const check = alumno.querySelector("input").checked;
-        if (check) presentes.push(nombre);
-      });
+      if(!fecha||!profesor||!grupo){ alert("⚠️ Completa fecha, profesor y grupo"); return; }
 
-      if (!fecha || !profesor || !grupo) {
-        alert("⚠️ Debes completar fecha, profesor y grupo antes de guardar.");
-        return;
-      }
-
-      const datos = { fecha, profesor, grupo, presentes };
-      const formData = new URLSearchParams();
-      formData.append("payload", JSON.stringify(datos));
+      const datos={fecha,profesor,grupo,presentes};
+      const formData=new URLSearchParams(); formData.append("payload",JSON.stringify(datos));
 
       try {
-       const response = await fetch(
-  "https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", // Worker
-  { method: "POST", body: formData }
-);
-
-
-        if (!response.ok) throw new Error("Error en la respuesta: " + response.status);
-        const result = await response.json();
-        console.log("Respuesta del servidor:", result);
+        const response=await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/",{method:"POST",body:formData});
+        const text=await response.text();
+        console.log("Respuesta raw:",text);
+        const result=JSON.parse(text);
         alert("✅ Datos enviados correctamente");
-      } catch (error) {
-        console.error("Error enviando a Google Sheets:", error);
+      } catch(error){
+        console.error("Error enviando a Google Sheets:",error);
         alert("❌ Hubo un problema al enviar los datos");
       }
     }
+  
   </script>
 </body>
 </html>
+
 
