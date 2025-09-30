@@ -266,22 +266,35 @@
     presentes
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbydGNE5eCvVHgd5fyPEfwDqltmNVAyYq1jtoO0yXEhgXHUr7UljAY6OQYovI-rU9Am8/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(datos)
-  })
-  .then(res => res.text())
-  .then(respuesta => {
-    alert("✅ Asistencia guardada en Google Sheets");
-  })
-  .catch(error => {
-    alert("❌ Error al enviar: " + error.message);
-  });
-}
+	  // Lo enviamos como x-www-form-urlencoded para evitar preflight
+  const formData = new URLSearchParams();
+  formData.append("payload", JSON.stringify(data));
+
+  try {
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycbydGNE5eCvVHgd5fyPEfwDqltmNVAyYq1jtoO0yXEhgXHUr7UljAY6OQYovI-rU9Am8/exec", // 👉 reemplaza con tu URL de despliegue
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error en la respuesta: " + response.status);
+    }
+
+    const result = await response.json();
+    console.log("Respuesta del servidor:", result);
+
+    alert("Datos enviados correctamente ✔️");
+
+  } catch (error) {
+    console.error("Error enviando a Google Sheets:", error);
+    alert("Hubo un problema al enviar ❌");
+  }
+}	  
 </script>
+
 
 
 
