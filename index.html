@@ -192,27 +192,42 @@
   };
 
   try {
-    const response = await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+  const response = await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-    const text = await response.text();
-    console.log("Respuesta raw:", text);
+  const text = await response.text();
+  console.log("Respuesta raw:", text);
 
-    const result = JSON.parse(text);
-    alert("✅ Datos enviados correctamente");
-
-  } catch (error) {
-    console.error("Error enviando a Google Sheets:", error);
-    alert("❌ Hubo un problema al enviar los datos");
+  let result;
+  try {
+    result = JSON.parse(text);
+  } catch {
+    throw new Error("La respuesta no es JSON válido: " + text);
   }
+
+  // 👇 Manejo de error lógico
+  if (result.error) {
+    console.error("Error en Apps Script:", result);
+    alert("❌ Error en Google Apps Script:\n" + result.raw);
+  } else {
+    console.log("Resultado OK:", result);
+    alert("✅ Datos enviados correctamente");
+  }
+
+} catch (error) {
+  // 👇 Esto atrapa errores de red o parseo
+  console.error("Error enviando a Google Sheets:", error);
+  alert("❌ Hubo un problema al enviar los datos\n" + error.message);
+}
 }
 </script>
   </script>
 </body>
 </html>
+
 
 
 
