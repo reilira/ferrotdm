@@ -197,19 +197,26 @@
       const formData=new URLSearchParams(); formData.append("payload",JSON.stringify(datos));
 
       try {
-        const response=await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/",{method:"POST",body:formData});
-        const text=await response.text();
-        console.log("Respuesta raw:",text);
-        const result=JSON.parse(text);
-        alert("✅ Datos enviados correctamente");
+       const response = await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"   // 👈 muy importante
+    },
+    body: JSON.stringify(datos)            // 👈 JSON puro
+  });
+
+  const result = await response.json();
+  console.log("Respuesta:", result);
+  alert("✅ Datos enviados correctamente");
       } catch(error){
-        console.error("Error enviando a Google Sheets:",error);
-        alert("❌ Hubo un problema al enviar los datos");
+        console.error("Error enviando a Google Sheets:", error);
+    alert("❌ Hubo un problema al enviar los datos");
       }
     }
   
   </script>
 </body>
 </html>
+
 
 
