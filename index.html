@@ -182,41 +182,40 @@
       doc.save(nombreArchivo);
     }
 
-   
-    async function enviarAGoogleSheets() {
-      const fecha = document.getElementById("fecha").value;
-      const profesor = document.getElementById("profesor").value;
-      const grupo = document.getElementById("grupo").value;
-      const alumnos = document.querySelectorAll("#lista-asistencia .alumno");
-      const presentes=[];
-      alumnos.forEach(a=>{ if(a.querySelector("input").checked) presentes.push(a.querySelector("label").textContent); });
+   async function enviarAGoogleSheets() {
+  const fecha = document.getElementById("fecha").value;
+  const profesor = document.getElementById("profesor").value;
+  const grupo = document.getElementById("grupo").value;
+  const alumnos = document.querySelectorAll("#lista-asistencia .alumno");
+  const presentes = [];
 
-      if(!fecha||!profesor||!grupo){ alert("⚠️ Completa fecha, profesor y grupo"); return; }
-
-      const datos={fecha,profesor,grupo,presentes};
-      const formData=new URLSearchParams(); formData.append("payload",JSON.stringify(datos));
-
-      try {
-       const response = await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"   // 👈 muy importante
-    },
-    body: JSON.stringify(datos)            // 👈 JSON puro
+  alumnos.forEach(alumno => {
+    const nombre = alumno.querySelector("label").textContent;
+    const check = alumno.querySelector("input").checked;
+    if (check) presentes.push(nombre);
   });
 
-  const result = await response.json();
-  console.log("Respuesta:", result);
-  alert("✅ Datos enviados correctamente");
-      } catch(error){
-        console.error("Error enviando a Google Sheets:", error);
+  const datos = { fecha, profesor, grupo, presentes };
+
+  try {
+    const response = await fetch("https://silent-glitter-866e.reinaldo-j-lira.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+
+    const result = await response.json(); // 👈 aquí sí será JSON válido
+    console.log("Respuesta del servidor:", result);
+    alert("✅ Datos enviados correctamente");
+  } catch (error) {
+    console.error("Error enviando a Google Sheets:", error);
     alert("❌ Hubo un problema al enviar los datos");
-      }
-    }
-  
+  }
+}
   </script>
 </body>
 </html>
+
 
 
 
